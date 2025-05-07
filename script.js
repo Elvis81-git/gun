@@ -3,11 +3,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const resetBtn = document.getElementById('reset-btn');
     const chamberCountElement = document.getElementById('chamber-count');
     const resultElement = document.getElementById('result');
+    const playerCardElement = document.getElementById('player-card');
 
     // Sound effects
     const spinSound = new Audio();
     const shotSound = new Audio();
     const emptySound = new Audio();
+
+    // Card data
+    const suits = ['黑桃', '紅心', '梅花', '方塊'];
+    const numbers = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
 
     // Initialize game state
     let chamberCount = 6;
@@ -21,6 +26,19 @@ document.addEventListener('DOMContentLoaded', () => {
         emptySound.src = "empty_trigger.mp3";
     }
 
+    // Get random card
+    function getRandomCard() {
+        const suit = suits[Math.floor(Math.random() * suits.length)];
+        const number = numbers[Math.floor(Math.random() * numbers.length)];
+        return `${suit}${number}`;
+    }
+
+    // Assign card to player
+    function assignPlayerCard() {
+        const card = getRandomCard();
+        playerCardElement.textContent = `你的牌是 ${card}`;
+    }
+
     // Reset game function
     function resetGame() {
         chamberCount = 6;
@@ -28,7 +46,9 @@ document.addEventListener('DOMContentLoaded', () => {
         gameOver = false;
         chamberCountElement.textContent = `剩餘機會: ${chamberCount}`;
         resultElement.textContent = '';
-        gunImage.style.opacity = '1'; // Reset the gun image opacity
+        gunImage.style.opacity = '1';
+        gunImage.src = 'gun.png';
+        assignPlayerCard();
     }
 
     // Pull trigger function
@@ -51,21 +71,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 resultElement.textContent = 'BANG! Game Over!';
                 resultElement.style.color = 'red';
                 gameOver = true;
-                gunImage.src = 'fire.png'; // 切換成 fire.png
-				
-				//1秒切圖
-				setTimeout(() => {
-                gunImage.src = 'gun.png';
-                gunImage.style.opacity = '0.6'; // Dim the gun image when game over
-				}, 1000);
-			} else {
+                gunImage.src = 'fire.png'; // 切換成開槍圖片
+
+                // 1秒後切回原圖並淡化
+                setTimeout(() => {
+                    gunImage.src = 'gun.png';
+                    gunImage.style.opacity = '0.6';
+                }, 1000);
+            } else {
                 // Empty chamber
                 emptySound.currentTime = 0;
                 emptySound.play();
                 resultElement.textContent = '扣扳機!... 什麼事都沒發生!';
                 resultElement.style.color = 'green';
             }
-        }, 800); // Wait for spin sound to play before showing result
+        }, 800); // 等待 spin 音效後顯示結果
     }
 
     // Event listeners
@@ -74,4 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Load sounds on page load
     loadSounds();
+
+    // Assign first card on page load
+    assignPlayerCard();
 });

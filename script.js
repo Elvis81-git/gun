@@ -39,6 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
         gameOver = false;
         chamberCountElement.textContent = `剩餘機會: ${chamberCount}`;
         resultElement.textContent = '';
+        resultElement.style.color = 'black';
         gunImage.style.opacity = '1';
         gunImage.src = 'gun.png';
         assignPlayerCard();
@@ -60,12 +61,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 resultElement.textContent = 'BANG! Game Over!';
                 resultElement.style.color = 'red';
                 gameOver = true;
-                gunImage.src = 'fire.png';
 
-                setTimeout(() => {
-                    gunImage.src = 'gun.png';
-                    gunImage.style.opacity = '0.6';
-                }, 1000);
+                // 等瀏覽器畫完文字後再切圖片
+                requestAnimationFrame(() => {
+                    gunImage.src = 'fire.png';
+                    setTimeout(() => {
+                        gunImage.src = 'gun.png';
+                        gunImage.style.opacity = '0.6';
+                    }, 1000);
+                });
             } else {
                 emptySound.currentTime = 0;
                 emptySound.play();
